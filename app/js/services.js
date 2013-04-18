@@ -1,9 +1,39 @@
 'use strict';
 
 /* Services */
-
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
 angular.module('myApp.services', []).
-  value('version', '0.1');
+    factory('storyFuncs', function($window) {
+        var obj = {
+            storyContent: function() {
+                return $window.document.getElementById('story').contentWindow;
+            },
+            replaceFade: function() {
+                obj.storyContent().fade = function(e, c) {
+                    if (c.fade=="in")
+                        e.style.visibility="visible";
+                    if (c.onComplete)
+                        c.onComplete();
+                }
+            },
+            getPassages: function() {
+                return obj.storyContent().tale.passages;
+            },
+            getCurrentPassage: function() {
+                return obj.storyContent().state.history[0].passage.title;
+            },
+            getLinks: function() {
+                return $("#story").contents().find("#passages .content a");
+            },
+            getURL: function() {
+                return obj.storyContent().location.href;
+            },
+            setURL: function($url) {
+                obj.storyContent().location.href=$url;
+            },
+            back: function(num) {
+                obj.storyContent().history.go(-num);
+            }
+        };
+
+        return obj;
+    });
