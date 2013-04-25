@@ -1,8 +1,49 @@
 'use strict';
 
 function Spooler($scope, $timeout, storyFuncs) {
+
+    function depthFirst(ids)
+    {
+        if ($scope.data.length>80000)
+            return;
+
+        var history = storyFuncs.getHistory();
+        var stackDepth = history.length;
+        var passage = storyFuncs.getCurrentPassage();
+        var url = storyFuncs.getURL();
+        var variables = storyFuncs.getVariables();
+        // remember stuff
+        $scope.data.push(passage + stackDepth);
+
+        // depth first search
+        _.each(ids, function(id) {
+            var dom = storyFuncs.display(id);
+            var newids = storyFuncs.getLinksIdsFromDom(dom);
+            depthFirst(newids);
+            while(history.length > stackDepth)
+               history.shift();
+        })
+    }
+
+    $scope.search="";
+    $timeout(function () { $scope.passages = storyFuncs.getPassages();}, 1000);
+
     $scope.findLinks = function() {
+        /*
+        var ids = storyFuncs.getLinksIds();
+        $scope.data = [];
+        depthFirst(ids);
+        */
+
+//        alert($(dom).text());
+//        var links = $("a", dom).map(function() { return this.id }).get();
+//        alert(angular.toJson(links));
+        alert(angular.toJson(ids2));
+//        var variables = document.getElementById('story').contentWindow.state.history[0].variables;
+//        alert(angular.toJson(variables));
+
         // replace fade function
+        /*
         storyFuncs.replaceFade();
 
         var titles = [];
@@ -26,7 +67,8 @@ function Spooler($scope, $timeout, storyFuncs) {
 //        alert(angular.toJson(variables));
 
 
-//        $scope.passages = getPassages();
+         */
+        $scope.passages = storyFuncs.getPassages();
     }
 }
 
